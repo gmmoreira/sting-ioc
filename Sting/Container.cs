@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sting
 {
     public class Container : IContainer
     {
-        private IDictionary<Type, Type> Storage { get; }
+        private IDictionary<Type, Binding> Storage { get; }
 
         public Container()
         {
-            Storage = new Dictionary<Type, Type>();
+            Storage = new Dictionary<Type, Binding>();
         }
 
         public void Register(Type service, Type impl)
         {
-            Storage.Add(service, impl);
+            Register(service, impl, new TransientFactory(impl));
         }
 
         public void Register<TService, TImpl>()
@@ -25,10 +22,26 @@ namespace Sting
             Register(typeof(TService), typeof(TImpl));
         }
 
+        private void Register(Type service, Type impl, IServiceFactory factory)
+        {
+            var binding = new Binding(service, impl, factory);
+            Storage.Add(service, binding);
+        }
+
+        public void RegisterSingleton(Type service, Type impl)
+        {
+            Register(service, impl, new SingletonFactory(impl));
+        }
+
+        public void RegisterSingleton<TService, TImpl>()
+        {
+            RegisterSingleton(typeof(TService), typeof(TImpl));
+        }
+
         public TService Resolve<TService>()
         {
-            var serviceType = Storage[typeof(TService)];
-            return (TService) serviceType.GetConstructors().First().Invoke(new object[] { });
+            var binding = Storage[typeof(TService)];
+            return (TService)binding.Build();
         }
     }
 }

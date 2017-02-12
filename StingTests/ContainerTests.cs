@@ -27,6 +27,18 @@ namespace Sting.Tests
             var resolvedService = container.Resolve<ITest>();
 
             Assert.That(resolvedService, Is.InstanceOf<ITest>());
+            Assert.That(resolvedService, Is.TypeOf<Impl>());
+        }
+        
+        [Test]
+        public void RegisteringSingletonShouldResolveSameObject()
+        {
+            container.RegisterSingleton<ITest, Impl>();
+
+            var one = container.Resolve<ITest>();
+            var two = container.Resolve<ITest>();
+
+            Assert.That(one, Is.SameAs(two));
         }
 
         private interface ITest
