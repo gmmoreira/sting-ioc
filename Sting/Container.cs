@@ -14,7 +14,7 @@ namespace Sting
 
         public void Register(Type service, Type impl)
         {
-            Register(service, impl, new TransientFactory(impl));
+            Register(service, impl, new TransientFactory(impl, new ConstructorResolver(this)));
         }
 
         public void Register<TService, TImpl>()
@@ -30,7 +30,7 @@ namespace Sting
 
         public void RegisterSingleton(Type service, Type impl)
         {
-            Register(service, impl, new SingletonFactory(impl));
+            Register(service, impl, new SingletonFactory(impl, new ConstructorResolver(this)));
         }
 
         public void RegisterSingleton<TService, TImpl>()
@@ -42,6 +42,16 @@ namespace Sting
         {
             var binding = Storage[typeof(TService)];
             return (TService)binding.Build();
+        }
+
+        public bool IsRegistered<TService>()
+        {
+            return IsRegistered(typeof(TService));
+        }
+
+        public bool IsRegistered(Type type)
+        {
+            return Storage.ContainsKey(type);
         }
     }
 }

@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sting
 {
     public class TransientFactory : IServiceFactory
     {
+        public IConstructorResolver ConstructorResolver { get; }
         public Type ImplementationType { get; }
 
-        public TransientFactory(Type implementationType)
+        public TransientFactory(Type implementationType, IConstructorResolver constructorResolver)
         {
+            ConstructorResolver = constructorResolver;
             ImplementationType = implementationType;
         }
 

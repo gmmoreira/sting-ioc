@@ -41,7 +41,32 @@ namespace Sting.Tests
             Assert.That(one, Is.SameAs(two));
         }
 
+        [Test]
+        public void ShouldBeAbleToVerifyIfTypeIsRegistered()
+        {
+            container.Register<ITest, Impl>();
+
+            var result = container.IsRegistered<ITest>();
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void ShouldReturnFalseWhenTypeIsNotRegistered()
+        {
+            container.Register<ITest, Impl>();
+
+            var result = container.IsRegistered<INonExists>();
+
+            Assert.That(result, Is.False);
+        }
+
         private interface ITest
+        {
+
+        }
+
+        private interface INonExists
         {
 
         }

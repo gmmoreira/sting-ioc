@@ -37,7 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding.cs" />
+    <Compile Include="ConstructorResolver.cs" />
     <Compile Include="Container.cs" />
+    <Compile Include="Exceptions\NoPublicConstructorException.cs" />
+    <Compile Include="IConstructorResolver.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="IServiceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

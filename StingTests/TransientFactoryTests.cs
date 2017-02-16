@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using Sting;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Sting.Tests
         [Test()]
         public void ItShouldReturnANewInstance()
         {
-            var factory = new TransientFactory(typeof(Impl));
+            var factory = new TransientFactory(typeof(Impl), Mock.Of<IConstructorResolver>());
 
             var one = factory.Build();
             var two = factory.Build();

@@ -9,5 +9,7 @@ namespace Sting
         TService Resolve<TService>();
         void RegisterSingleton<TService, TImpl>();
         void RegisterSingleton(Type service, Type impl);
+        bool IsRegistered<TService>();
+        bool IsRegistered(Type type);
     }
 }

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 
 namespace Sting.Tests
 {
@@ -8,7 +9,7 @@ namespace Sting.Tests
         [Test()]
         public void ItshouldReturnSameInstance()
         {
-            var factory = new SingletonFactory(typeof(Impl));
+            var factory = new SingletonFactory(typeof(Impl), Mock.Of<IConstructorResolver>());
 
             var one = factory.Build();
             var two = factory.Build();
