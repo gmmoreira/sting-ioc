@@ -1,22 +1,26 @@
 ﻿using System;
-using System.Linq;
 
 namespace Sting
 {
     public class TransientFactory : IServiceFactory
     {
         public IConstructorResolver ConstructorResolver { get; }
+        public IDependencyResolver DependencyResolver { get; }
         public Type ImplementationType { get; }
 
-        public TransientFactory(Type implementationType, IConstructorResolver constructorResolver)
+        public TransientFactory(Type implementationType, IConstructorResolver constructorResolver, IDependencyResolver dependencyResolver)
         {
             ConstructorResolver = constructorResolver;
+            DependencyResolver = dependencyResolver;
             ImplementationType = implementationType;
         }
 
         public virtual object Build()
         {
-            return ImplementationType.GetConstructors().First().Invoke(new object[] { });
+            var constructor = ConstructorResolver.GetConstructor(ImplementationType);
+            var parameters = DependencyResolver.Resolve(constructor);
+
+            return constructor.Invoke(parameters);
         }
     }
 }

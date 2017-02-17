@@ -59,7 +59,21 @@ namespace Sting.Tests
             Assert.That(constructor, Is.EqualTo(MultipleConstructor.ParameterConstructor()));
         }
 
+        [Test]
+        public void WhenAllDependenciesAreMetItShouldReturnMostParameterConstructor()
+        {
+            container.Setup(c => c.IsRegistered(typeof(ITest))).Returns(true);
+            container.Setup(c => c.IsRegistered(typeof(ITest2))).Returns(true);
+
+            var constructor = constructorResolver.GetConstructor(typeof(MultipleConstructor));
+
+            Assert.That(constructor, Is.EqualTo(MultipleConstructor.MostParameterConstructor()));
+        }
+
         private interface ITest
+        { }
+
+        private interface ITest2
         { }
 
         private class NoPublicConstructor
@@ -83,6 +97,9 @@ namespace Sting.Tests
 
             }
 
+            public MultipleConstructor(ITest test, ITest2 test2)
+            { }
+
 
             public static ConstructorInfo EmptyConstructor()
             {
@@ -92,6 +109,11 @@ namespace Sting.Tests
             public static ConstructorInfo ParameterConstructor()
             {
                 return typeof(MultipleConstructor).GetConstructor(new Type[] { typeof(ITest) });
+            }
+
+            public static ConstructorInfo MostParameterConstructor()
+            {
+                return typeof(MultipleConstructor).GetConstructor(new Type[] { typeof(ITest), typeof(ITest2) });
             }
         }
     }

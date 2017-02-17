@@ -6,7 +6,8 @@ namespace Sting
     {
         private object Instance { get; set; }
 
-        public SingletonFactory(Type implementationType, IConstructorResolver constructorResolver) : base(implementationType, constructorResolver)
+        public SingletonFactory(Type implementationType, IConstructorResolver constructorResolver, IDependencyResolver dependencyResolver) 
+            : base(implementationType, constructorResolver, dependencyResolver)
         {
         }
 

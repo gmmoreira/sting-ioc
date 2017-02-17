@@ -21,7 +21,8 @@ namespace Sting
 
             return constructors.ThrowIfNoPublicConstructor()
                 .Where(DependenciesAreResolvable)
-                .ReturnEmptyConstructAsDefault(type)
+                .OrderByDescending(c => c.GetParameters().Count())
+                .EmptyConstructAsDefault(type)
                 .FirstOrDefault();
         }
 
@@ -42,7 +43,7 @@ namespace Sting
             return enumerable;
         }
 
-        public static IEnumerable<ConstructorInfo> ReturnEmptyConstructAsDefault(this IEnumerable<ConstructorInfo> enumerable, Type type)
+        public static IEnumerable<ConstructorInfo> EmptyConstructAsDefault(this IEnumerable<ConstructorInfo> enumerable, Type type)
         {
             return enumerable.DefaultIfEmpty(type.GetConstructor(new Type[] { }));
         }
