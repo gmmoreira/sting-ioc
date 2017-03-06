@@ -1,65 +1,58 @@
 ﻿using Moq;
-using NUnit.Framework;
-using Sting;
+using Xunit;
 using Sting.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sting.Tests
 {
-    [TestFixture]
     public class ConstructorResolverTests
     {
         private IConstructorResolver constructorResolver;
         private Mock<IContainer> container;
 
-        [SetUp]
-        public void SetUp()
+        public ConstructorResolverTests()
         {
             container = new Mock<IContainer>();
             constructorResolver = new ConstructorResolver(container.Object);
         }
 
-        [Test]
+        [Fact]
         public void ItShouldThrowExceptionWhenNoPublicConstructorIsAvailable()
         {
-            Assert.That(() =>
+            Assert.Throws<NoPublicConstructorException>(() =>
             {
                 return constructorResolver.GetConstructor(typeof(NoPublicConstructor));
-            }, Throws.TypeOf<NoPublicConstructorException>());
+            });
         }
 
-        [Test]
+        [Fact]
         public void ItShouldReturnDefaultConstructor()
         {
             var constructor = constructorResolver.GetConstructor(typeof(DefaultConstructor));
 
-            Assert.That(constructor, Is.Not.Null);
+            Assert.NotNull(constructor);
         }
 
-        [Test]
+        [Fact]
         public void ItShouldResolveEmptyConstructorIfDependenciesAreNotResolved()
         {
             var constructor = constructorResolver.GetConstructor(typeof(MultipleConstructor));
 
-            Assert.That(constructor, Is.EqualTo(MultipleConstructor.EmptyConstructor()));
+            Assert.Equal(constructor,MultipleConstructor.EmptyConstructor());
         }
 
-        [Test]
+        [Fact]
         public void ItShouldResolveParameterConstructorIfDependenciesAreResolved()
         {
             container.Setup(c => c.IsRegistered(typeof(ITest))).Returns(true);
 
             var constructor = constructorResolver.GetConstructor(typeof(MultipleConstructor));
 
-            Assert.That(constructor, Is.EqualTo(MultipleConstructor.ParameterConstructor()));
+            Assert.Equal(constructor, MultipleConstructor.ParameterConstructor());
         }
 
-        [Test]
+        [Fact]
         public void WhenAllDependenciesAreMetItShouldReturnMostParameterConstructor()
         {
             container.Setup(c => c.IsRegistered(typeof(ITest))).Returns(true);
@@ -67,7 +60,7 @@ namespace Sting.Tests
 
             var constructor = constructorResolver.GetConstructor(typeof(MultipleConstructor));
 
-            Assert.That(constructor, Is.EqualTo(MultipleConstructor.MostParameterConstructor()));
+            Assert.Equal(constructor, MultipleConstructor.MostParameterConstructor());
         }
 
         private interface ITest

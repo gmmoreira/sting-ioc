@@ -1,24 +1,22 @@
 ﻿using Moq;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Reflection;
 
 namespace Sting.Tests
 {
-    [TestFixture]
     public class SingletonFactoryTests
     {
         private Mock<IConstructorResolver> constructorResolver;
         private Mock<IDependencyResolver> dependencyResolver;
 
-        [SetUp]
-        public void SetUp()
+        public SingletonFactoryTests()
         {
             constructorResolver = new Mock<IConstructorResolver>();
             dependencyResolver = new Mock<IDependencyResolver>();
         }
 
-        [Test]
+        [Fact]
         public void ItshouldReturnSameInstance()
         {
             constructorResolver.Setup(r => r.GetConstructor(It.IsAny<Type>())).Returns(ParameterlessClass.GetParameterlessConstructor()).Verifiable();
@@ -28,7 +26,7 @@ namespace Sting.Tests
             var object1 = factory.Build();
             var object2 = factory.Build();
 
-            Assert.That(object1, Is.SameAs(object2));
+            Assert.Same(object1, object2);
         }
 
         private class ParameterlessClass
