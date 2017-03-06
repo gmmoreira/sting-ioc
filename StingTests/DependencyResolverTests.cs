@@ -1,23 +1,22 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using Xunit;
 using System.Linq;
+using System.Reflection;
 
 namespace Sting.Tests
 {
-    [TestFixture]
     public class DependencyResolverTests
     {
         private Mock<IContainer> container;
         private DependencyResolver resolver;
 
-        [SetUp]
-        public void SetUp()
+        public DependencyResolverTests()
         {
             container = new Mock<IContainer>();
             resolver = new DependencyResolver(container.Object);
         }
 
-        [Test]
+        [Fact]
         public void GivenAConstructorInfoItShouldResolveAllDependencies()
         {
             var constructorInfo = typeof(ClassTest).GetConstructors().First();
@@ -27,10 +26,10 @@ namespace Sting.Tests
 
             var result = resolver.Resolve(constructorInfo);
 
-            Assert.That(result, Has.Length.EqualTo(3));
-            Assert.That(result[0], Is.InstanceOf<ITest1>());
-            Assert.That(result[1], Is.InstanceOf<ITest2>());
-            Assert.That(result[2], Is.InstanceOf<ITest3>());
+            Assert.Equal(3, result.Length);
+            Assert.IsAssignableFrom<ITest1>(result[0]);
+            Assert.IsAssignableFrom<ITest2>(result[1]);
+            Assert.IsAssignableFrom<ITest3>(result[2]);
         }
 
         private interface ITest1 { } private class Test1 : ITest1 { }

@@ -1,12 +1,11 @@
 ﻿using Moq;
-using NUnit.Framework;
+using Xunit;
 
 namespace Sting.Tests
 {
-    [TestFixture]
     public class BindingTests
     {
-        [Test]
+        [Fact]
         public void ItShouldUseServiceFactory()
         {
             var factory = new Mock<IServiceFactory>();

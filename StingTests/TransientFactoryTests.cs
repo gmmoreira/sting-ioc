@@ -1,29 +1,22 @@
 ﻿using Moq;
-using NUnit.Framework;
-using Sting;
+using Xunit;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sting.Tests
 {
-    [TestFixture]
     public class TransientFactoryTests
     {
         private Mock<IConstructorResolver> constructorResolver;
         private Mock<IDependencyResolver> dependencyResolver;
 
-        [SetUp]
-        public void SetUp()
+        public TransientFactoryTests()
         {
             constructorResolver = new Mock<IConstructorResolver>();
             dependencyResolver = new Mock<IDependencyResolver>();
         }
 
-        [Test]
+        [Fact]
         public void ItShouldReturnANewInstance()
         {
             constructorResolver.Setup(r => r.GetConstructor(It.IsAny<Type>())).Returns(ParameterClass.GetParameterlessConstructor());
@@ -33,10 +26,10 @@ namespace Sting.Tests
             var object1 = factory.Build();
             var object2 = factory.Build();
 
-            Assert.That(object1, Is.Not.SameAs(object2));
+            Assert.NotSame(object1, object2);
         }
 
-        [Test]
+        [Fact]
         public void ItShouldRequestAConstructor()
         {
             constructorResolver.Setup(r => r.GetConstructor(It.IsAny<Type>())).Returns(ParameterClass.GetParameterlessConstructor()).Verifiable();
@@ -48,7 +41,7 @@ namespace Sting.Tests
             constructorResolver.Verify(r => r.GetConstructor(typeof(ParameterClass)));
         }
 
-        [Test]
+        [Fact]
         public void ItShouldRequestParametersForConstructor()
         {
             constructorResolver.Setup(r => r.GetConstructor(It.IsAny<Type>())).Returns(ParameterClass.GetParameterlessConstructor());

@@ -1,36 +1,28 @@
-﻿using NUnit.Framework;
-using Sting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Xunit;
 
 namespace Sting.Tests
 {
-    [TestFixture()]
     public class ContainerTests
     {
         private IContainer container;
 
-        [SetUp]
-        public void SetUp()
+        public ContainerTests()
         {
             container = new Container();
         }
 
-        [Test()]
+        [Fact]
         public void ItShouldBeAbleToRegisterAndResolveService()
         {
             container.Register<ITest, Impl>();
 
             var resolvedService = container.Resolve<ITest>();
 
-            Assert.That(resolvedService, Is.InstanceOf<ITest>());
-            Assert.That(resolvedService, Is.TypeOf<Impl>());
+            Assert.IsAssignableFrom<ITest>(resolvedService);
+            Assert.IsType<Impl>(resolvedService);                      
         }
         
-        [Test]
+        [Fact]
         public void RegisteringSingletonShouldResolveSameObject()
         {
             container.RegisterSingleton<ITest, Impl>();
@@ -38,27 +30,27 @@ namespace Sting.Tests
             var one = container.Resolve<ITest>();
             var two = container.Resolve<ITest>();
 
-            Assert.That(one, Is.SameAs(two));
+            Assert.Same(one, two);
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToVerifyIfTypeIsRegistered()
         {
             container.Register<ITest, Impl>();
 
             var result = container.IsRegistered<ITest>();
 
-            Assert.That(result, Is.True);
+            Assert.True(result);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnFalseWhenTypeIsNotRegistered()
         {
             container.Register<ITest, Impl>();
 
             var result = container.IsRegistered<INonExists>();
 
-            Assert.That(result, Is.False);
+            Assert.False(result);
         }
 
         private interface ITest
