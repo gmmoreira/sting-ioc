@@ -1,0 +1,14 @@
+sudo: required
+
+language: csharp
+mono: none
+dotnet: 1.0.0-preview2-003121
+
+services:
+  - docker
+
+before_install:
+- docker build -t sting-test -f Dockerfile.test .
+
+script:
+- docker run --rm sting-test

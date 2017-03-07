@@ -1,0 +1,14 @@
+FROM microsoft/dotnet
+
+WORKDIR /usr/src/app
+
+# copy project.json and restore as distinct layers
+COPY Sting.sln Sting.sln
+COPY Sting/Sting.csproj Sting/Sting.csproj 
+COPY StingTests/StingTests.csproj StingTests/StingTests.csproj
+RUN dotnet restore
+
+# copy and build everything else
+COPY . .
+RUN dotnet build
+ENTRYPOINT ["dotnet", "test", "StingTests/StingTests.csproj"]
