@@ -24,7 +24,7 @@ container.Register<ILog, Log>();
 
 ### Resolving a service
 ```csharp
-var logger = container.Resolve<Log>();
+var logger = container.Resolve<ILog>();
 logger.Info("Hello");
 ```
 
@@ -66,4 +66,4 @@ publisher.Publish("Hello");
 
 ## Code Status
 
-![Travis CI build status](https://travis-ci.org/gmmoreira/sting-ioc.svg?branch=master)
+[![Travis CI build status](https://travis-ci.org/gmmoreira/sting-ioc.svg?branch=master)](https://travis-ci.org/gmmoreira/sting-ioc)
