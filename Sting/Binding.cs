@@ -2,7 +2,7 @@
 
 namespace Sting
 {
-    public class Binding
+    public class Binding : IBinding
     {
         public Type ServiceType { get; }
         public Type ImplementationType { get; }

@@ -1,13 +1,16 @@
 ﻿using Xunit;
+using Moq;
 
 namespace Sting.Tests
 {
     public class ContainerTests
     {
         private IContainer container;
+        private Mock<IBindingRepository> repository;
 
         public ContainerTests()
         {
+            repository = new Mock<IBindingRepository>();
             container = new Container();
         }
 

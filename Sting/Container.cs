@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Sting
 {
     public class Container : IContainer
     {
-        private IDictionary<Type, Binding> Storage { get; }
+        private IBindingRepository Repository { get; }
 
         public Container()
         {
-            Storage = new Dictionary<Type, Binding>();
+            Repository = BindingRepository();
+        }
+        public Container(IBindingRepository repository)
+        {
+            Repository = repository;
         }
 
         public void Register(Type service, Type impl)
@@ -25,7 +28,7 @@ namespace Sting
         private void Register(Type service, Type impl, IServiceFactory factory)
         {
             var binding = new Binding(service, impl, factory);
-            Storage.Add(service, binding);
+            Repository.Add(binding);
         }
 
         public void RegisterSingleton(Type service, Type impl)
@@ -45,7 +48,7 @@ namespace Sting
 
         public object Resolve(Type type)
         {
-            var binding = Storage[type];
+            var binding = Repository.Get(type);
             return binding.Build();
         }
 
@@ -56,7 +59,7 @@ namespace Sting
 
         public bool IsRegistered(Type type)
         {
-            return Storage.ContainsKey(type);
+            return Repository.Exists(type);
         }
 
         #region HelperMethods
@@ -69,6 +72,10 @@ namespace Sting
         private IDependencyResolver DependencyResolver()
         {
             return new DependencyResolver(this);
+        }
+        private IBindingRepository BindingRepository()
+        {
+            return new DictionaryBindingRepository();
         }
 
         #endregion
